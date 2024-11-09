@@ -13,14 +13,15 @@ export async function getStaticPaths() {
 
 const { blogId } = Astro.params;
 const blog = await getBlogDetail(blogId as string);
+const pubDate = new Date(blog.publishedAt)
+const updatedDate = new Date(blog.updatedAt)
 ---
 
-<BlogPost content={{
-    title: blog.title,
-    description: '',
-    pubDate: new Date(blog.publishedAt).toLocaleDateString('ja-JP'),
-    updatedDate: new Date(blog.updatedAt).toLocaleDateString('ja-JP'),
-}}
+<BlogPost
+  title={blog.title}
+  description={blog.body}
+  pubDate={pubDate}
+  updatedDate={updatedDate}
 >
 <main set:html={blog.body} />
 </BlogPost>
