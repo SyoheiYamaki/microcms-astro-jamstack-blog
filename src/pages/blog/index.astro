@@ -5,10 +5,9 @@ import Footer from '../../components/Footer.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../../consts';
 import { getCollection } from 'astro:content';
 import FormattedDate from '../../components/FormattedDate.astro';
+import { getBlogs } from '../../library/microcms';
 
-const posts = (await getCollection('blog')).sort(
-	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
-);
+const { contents: posts } = await getBlogs({ fields: ["id", "title", "publishedAt"] })
 ---
 
 <!doctype html>
@@ -93,12 +92,11 @@ const posts = (await getCollection('blog')).sort(
 					{
 						posts.map((post) => (
 							<li>
-								<a href={`/blog/${post.slug}/`}>
-									<img width={720} height={360} src={post.data.heroImage} alt="" />
-									<h4 class="title">{post.data.title}</h4>
-									<p class="date">
-										<FormattedDate date={post.data.pubDate} />
-									</p>
+								<time datetime={post.publishedAt}>
+									{new Date(post.publishedAt).toLocaleDateString('ja-JP')}
+								</time>
+								<a href={`/blog/${post.id}`}>
+									{post.title}
 								</a>
 							</li>
 						))
